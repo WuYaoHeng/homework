@@ -11,6 +11,10 @@
 #include <vector>
 using namespace std;
 
+#define OJ_DEBUG true
+#define $(x) {if (OJ_DEBUG) {cout << __LINE__ << ": "; {x} cout << endl;}}
+#define _(x) {cout << #x << " = " << x << " ";}
+
 #define MAXN 100010
 int n;
 long long T;
