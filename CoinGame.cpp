@@ -18,7 +18,6 @@ using namespace std;
 #define MAXN 100010
 int n;
 long long T;
-
 struct Mat {
     vector<bool> data = vector<bool>(MAXN, 0);
     
