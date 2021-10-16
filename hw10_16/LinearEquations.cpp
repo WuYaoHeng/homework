@@ -1,6 +1,6 @@
 //
 //  main.cpp
-//  LinearEquations
+//  LinearEquations-luogu3389
 //
 //  Created by MickeyWu on 2021/10/8.
 //
