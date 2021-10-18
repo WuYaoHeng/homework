@@ -1,54 +1,41 @@
-#include <iostream>
-#include <string>
-#include <algorithm>
-#include <stack>
-#include <cctype>
-#include <vector>
-#include <cmath>
-#include <utility>
+// luogu-7073 表达式
+// Unaccepted 65分
+#include <bits/stdc++.h>
 using namespace std;
 
-const int maxs = 1e6 + 5;
 struct Node {
     int id, left, right, negate = 0;
-} tree[maxs];
+} tree[1000010];
 int curNode = 0;
 
-const int maxn = 1e5 + 5, maxq = 1e5 + 5;
-int val[maxn], ask[maxq];
+#define MAXN 100010
+int val[MAXN], ask[MAXN], res[MAXN];
 
 typedef pair<int, vector<int> > retype;
 retype dfs(int cur) {
     Node now = tree[cur];
-    cout << now.id << " " << now.negate << endl;
-    
     if (now.id > 0) return {val[now.id] ^ now.negate, {now.id}};
-    
     retype ans, lp = dfs(now.left), rp = dfs(now.right);
-    
     int flag = 0;
     if (now.id == -2) ans.first = rp.first & lp.first;
     else {
         ans.first = rp.first | lp.first;
         flag = 1;
     }
-    
     bool lpp = false, rpp = false;
-    if (!(lp.second.empty() && rp.second.empty())) {
-        if (lp.second.empty() && !rp.second.empty() && lp.first == ~flag) rpp = true;
-        else if (rp.second.empty() && !lp.second.empty() && rp.first == ~flag) lpp = true;
-        else if (lp.first != rp.first) lpp = !(rpp = rp.first == flag);
-        else if (lp.first == ~flag) lpp = rpp = true;
-    }
+    int tmp = flag ^ 1;
+    if (lp.second.empty() && !rp.second.empty()) rpp = lp.first == tmp;
+    else if (!lp.second.empty() && rp.second.empty()) lpp = rp.first == tmp;
+    else if (lp.first == rp.first) lpp = rpp = lp.first == tmp;
+    else lpp = !(rpp = rp.first == flag);
     if (lpp) for (const int &i : lp.second) ans.second.push_back(i);
     if (rpp) for (const int &i : rp.second) ans.second.push_back(i);
     ans.first ^= now.negate;
     return ans;
 }
 
-bool res[100005];
-
 int main(int argc, const char * argv[]) {
+    ios::sync_with_stdio(false);
     string read;
     getline(cin, read);
     int n, q;
@@ -73,22 +60,24 @@ int main(int argc, const char * argv[]) {
     }
     
     stack<int> rnod;
-    int cur = 0, get, negate = 0;
+    int cur = 0, get;
+    bool neg = 0;
     while (!exp.empty()) {
         get = exp.top();
         exp.pop();
         tree[cur].id = get;
-        if (negate) {
+        if (neg) {
             tree[cur].negate = 1;
-            negate = 0;
+            neg = false;
         }
         if (get < 0)
-            if (get != -3) {
+            if (get == -3) neg = true;
+            else {
                 tree[cur].left = ++curNode;
                 tree[cur].right = ++curNode;
                 rnod.push(tree[cur].right);
                 cur = tree[cur].left;
-            } else negate = 1;
+            }
         else if (!rnod.empty()) {
             cur = rnod.top();
             rnod.pop();
